@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model empleados {
+  id_empleado Int       @id @default(autoincrement())
+  nombres     String
+  apellidos   String
+  direccion   String?
+  telefono    String?
+  email       String?
+
+  usuarios usuarios[]
+  ventas   ventas[]
+}
+
+model usuarios {
+  id_usuario    Int       @id @default(autoincrement())
+  id_empleado   Int
+  username      String    @unique
+  password_hash String
+  id_rol        Int
+  auth_id       String?   @db.Uuid
+
+  empleado empleados @relation(fields: [id_empleado], references: [id_empleado])
+  rol      roles      @relation(fields: [id_rol], references: [id_rol])
+}
+
+model roles {
+  id_rol     Int    @id @default(autoincrement())
+  nombre_rol String
+
+  usuarios usuarios[]
+}
+
+model clientes {
+  id_cliente Int      @id @default(autoincrement())
+  nombres    String
+  apellidos  String
+  dni        String   @db.Char(8)
+
+  ventas ventas[]
+}
+
+model ventas {
+  id_venta    Int       @id @default(autoincrement())
+  id_cliente  Int
+  id_empleado Int
+  fecha_venta DateTime  @db.Timestamptz(6)
+  total_venta Decimal   @db.Decimal()
+
+  cliente  clientes        @relation(fields: [id_cliente], references: [id_cliente])
+  empleado empleados       @relation(fields: [id_empleado], references: [id_empleado])
+  detalles detalle_venta[]
+}
+
+model detalle_venta {
+  id_detalle            Int      @id @default(autoincrement())
+  id_venta              Int
+  id_producto           String
+  cantidad              Int
+  precio_unitario_venta Decimal  @db.Decimal()
+
+  venta    ventas    @relation(fields: [id_venta], references: [id_venta])
+  producto productos @relation(fields: [id_producto], references: [id_producto])
+}
+
+model productos {
+  id_producto      String   @id
+  nombre_producto  String
+  descripcion      String?
+  precio_unitario  Decimal  @db.Decimal()
+  cantidad_stock   Int
+  id_proveedor     Int
+  detalles         String?
+  id_tipo          Int
+
+  proveedor proveedores        @relation(fields: [id_proveedor], references: [id_proveedor])
+  tipo      tipos_medicamento  @relation(fields: [id_tipo], references: [id_tipo])
+
+  detalle_venta detalle_venta[]
+}
+
+model proveedores {
+  id_proveedor      Int     @id @default(autoincrement())
+  nombre_empresa    String
+  direccion         String?
+  telefono          String?
+  correo_electronico String?
+  detalles          String?
+
+  productos productos[]
+}
+
+model tipos_medicamento {
+  id_tipo     Int     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+
+  productos productos[]
+}
