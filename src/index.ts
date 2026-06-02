@@ -1,19 +1,17 @@
-import express, { NextFunction, Request, Response } from "express";
-const app = express();
-const port = 3000;
+import express, { Request, Response } from "express"
 
-app.use(express.json());
+const app = express()
+const port = 3000
 
-app.get("/", (req: Request, res: Response) => {
-  res.send({ message: "Hello World" });
-  
-});
+app.use(express.json())
 
-//Manejo de errores
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  res.status(500).send("Algo salió mal");
-});
+app.get("/", (_req: Request, res: Response) =>
+{
+    res.json({ message: "Hello World" })
+})
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+
+app.listen(port, () =>
+{
+    console.log(`Server is running on port ${port}`)
+})
