@@ -1,4 +1,4 @@
-export enum EnumTipos {
+export enum EnumTipo {
 
     Tabletas,
     Cápsulas,
