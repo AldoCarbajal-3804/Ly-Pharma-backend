@@ -1,10 +1,30 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
-
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+enum EnumCategoria {
+  Antibiotico @map("Antibiótico")
+  Analgesico  @map("Analgésico")
+  Antihistaminico @map("Antihistamínico")
+  Antiinflamatorio @map("Antiinflamatorio")
+  Gastrointestinal
+  Antidiabetico @map("Antidiabético")
+  Cardivascular
+  Respiratorio
+  Neurologico @map("Neurológico")
+  Dermatologico @map("Dermatológico")
+  Suplemento
+}
+
+enum EnumTipo {
+  Tabletas
+  Capsulas  @map("Cápsulas")
+  Inhalador
+  Crema
 }
 
 model empleados {
@@ -75,14 +95,17 @@ model productos {
   nombre_producto  String
   descripcion      String?
   precio_unitario  Decimal  @db.Decimal()
+  fecha_vencimiento DateTime @db.Timestamptz(6)
   cantidad_stock   Int
   id_proveedor     Int
   detalles         String?
   id_tipo          Int
+  id_categoria     Int
 
   proveedor proveedores        @relation(fields: [id_proveedor], references: [id_proveedor])
   tipo      tipos_medicamento  @relation(fields: [id_tipo], references: [id_tipo])
-
+  categoria categorias         @relation(fields: [id_categoria], references: [id_categoria])
+  
   detalle_venta detalle_venta[]
 }
 
@@ -99,8 +122,16 @@ model proveedores {
 
 model tipos_medicamento {
   id_tipo     Int     @id @default(autoincrement())
-  nombre      String
+  nombre      EnumTipo
   descripcion String?
+
+  productos productos[]
+}
+
+model categorias {
+  id_categoria Int     @id @default(autoincrement())
+  nombre       EnumCategoria
+  descripcion  String?
 
   productos productos[]
 }
