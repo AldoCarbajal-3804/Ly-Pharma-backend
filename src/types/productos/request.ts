@@ -1,13 +1,11 @@
-import { EnumCategoria } from "../../utils/enums/EnumCategoria"
-import { EnumTipo } from "../../utils/enums/EnumTipo"
-
-export interface ProductRequest{
+export interface ProductoRequest{
     nombre: string
-    precio: number
     descripcion: string
-    categoria: EnumCategoria
-    tipos: EnumTipo
-    costo: number
-    fechaVencimiento: Date
+    precio_unitario: number
+    stock: number
+    id_proveedor: number
+    id_categoria: number
+    id_tipo: number
+    fecha_vencimiento: Date
     detalles: string
 }

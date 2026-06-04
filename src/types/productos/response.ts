@@ -1,11 +1,9 @@
-import { EnumCategoria } from "../../utils/enums/EnumCategoria"
-import { EnumTipo } from "../../utils/enums/EnumTipo"
-
-export interface ProductResponse{
+export interface ProductoResponse{
+    id_producto: string
     nombre: string
-    precio: number
-    categoria: EnumCategoria
-    tipos: EnumTipo
-    costo: number
-    fechaVencimiento: Date
+    stock: number
+    precio_unitario: number
+    id_categoria: number
+    id_tipo: number
+    fecha_vencimiento: Date
 }
