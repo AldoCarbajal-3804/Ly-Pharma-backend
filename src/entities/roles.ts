@@ -1,4 +1,4 @@
-import { roles as RolesPrisma } from "@prisma/client";
+import { roles as RolesPrisma } from "../generated/prisma/client";
 
 export class Roles
 {

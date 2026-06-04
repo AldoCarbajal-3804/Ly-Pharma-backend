@@ -1,4 +1,4 @@
-import { detalle_venta as DetalleVentaPrisma } from "@prisma/client";
+import { detalle_venta as DetalleVentaPrisma } from "../generated/prisma/client";
 
 export class DetalleVenta
 {

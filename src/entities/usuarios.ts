@@ -1,4 +1,4 @@
-import { usuarios as UsuariosPrisma } from "@prisma/client";
+import { usuarios as UsuariosPrisma } from "../generated/prisma/client";
 
 export class Usuarios
 {

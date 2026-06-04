@@ -1,4 +1,4 @@
-import { clientes as ClientesPrisma } from "@prisma/client";
+import { clientes as ClientesPrisma } from "../generated/prisma/client";
 
 export class Clientes
 {

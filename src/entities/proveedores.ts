@@ -1,4 +1,4 @@
-import { proveedores as ProveedoresPrisma } from "@prisma/client";
+import { proveedores as ProveedoresPrisma } from "../generated/prisma/client";
 
 export class Proveedores
 {
