@@ -3,7 +3,7 @@ export interface ProductoResponse{
     nombre: string
     stock: number
     precio_unitario: number
-    id_categoria: Number
-    id_tipo: Number
+    categoria: string
+    tipo: string
     fecha_vencimiento: Date
 }

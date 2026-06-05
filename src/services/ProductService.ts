@@ -8,23 +8,15 @@ import { MapperProducto } from "../utils/mappers/MapperProducto"
 export class ProductService {
 
     async list(): Promise<ProductoResponse[]> {
-        const productos = await prisma.productos.findMany({
-            include: {
-                tipo: true,
-                categoria: true,
-            },
-        })
+        const productos = await prisma.productos.findMany()
         
-        return productos.map(p => {
-            const productoEntity = Productos.fromPrisma(p)
-            return MapperProducto.toResponse(
-                productoEntity
-            )
-        })
+        return Promise.all(productos.map(p =>
+            MapperProducto.toResponse(Productos.fromPrisma(p))
+        ))
     }
 
     async create(request: ProductoRequest): Promise<ProductoResponse> {
-        const productoEntity = MapperProducto.fromRequest(request)
+        const productoEntity = await MapperProducto.fromRequest(request)
         const productoPrisma = await prisma.productos.create({
             data: {
                 nombre_producto: productoEntity.nombre_producto,
@@ -38,7 +30,7 @@ export class ProductService {
                 fecha_vencimiento: productoEntity.fecha_vencimiento,
             },
         })
-        return MapperProducto.toResponse(Productos.fromPrisma(productoPrisma))
+        return await MapperProducto.toResponse(Productos.fromPrisma(productoPrisma))
     }
 
     async delete(id_producto: number): Promise<void> {
@@ -50,7 +42,7 @@ export class ProductService {
     }
 
     async update(id_producto: number, request: ProductoRequest): Promise<ProductoResponse> {
-        const productoEntity = MapperProducto.fromRequest(request)
+        const productoEntity = await MapperProducto.fromRequest(request)
         const productoPrisma = await prisma.productos.update({
             where: {
                 id_producto,
@@ -67,7 +59,7 @@ export class ProductService {
                 fecha_vencimiento: productoEntity.fecha_vencimiento,
             },
         })
-        return MapperProducto.toResponse(Productos.fromPrisma(productoPrisma))
+        return await MapperProducto.toResponse(Productos.fromPrisma(productoPrisma))
     }
 
     
