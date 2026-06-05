@@ -13,7 +13,7 @@ enum EnumCategoria {
   Antiinflamatorio @map("Antiinflamatorio")
   Gastrointestinal
   Antidiabetico @map("Antidiabético")
-  Cardivascular
+  Cardiovascular
   Respiratorio
   Neurologico @map("Neurológico")
   Dermatologico @map("Dermatológico")
@@ -82,7 +82,7 @@ model ventas {
 model detalle_venta {
   id_detalle            Int      @id @default(autoincrement())
   id_venta              Int
-  id_producto           String
+  id_producto           Int
   cantidad              Int
   precio_unitario_venta Decimal  @db.Decimal()
 
@@ -91,7 +91,7 @@ model detalle_venta {
 }
 
 model productos {
-  id_producto      String   @id
+  id_producto      Int      @id @default(autoincrement())
   nombre_producto  String
   descripcion      String?
   precio_unitario  Decimal  @db.Decimal()
