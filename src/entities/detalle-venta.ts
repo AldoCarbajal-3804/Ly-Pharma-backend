@@ -28,7 +28,7 @@ export class DetalleVenta
         return new DetalleVenta(
             data.id_detalle,
             data.id_venta,
-            data.id_producto,
+            data.id_producto.toString(),
             data.cantidad,
             Number(data.precio_unitario_venta),
         )
