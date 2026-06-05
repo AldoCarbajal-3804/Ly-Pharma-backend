@@ -3,9 +3,9 @@ export interface ProductoRequest{
     descripcion: string
     precio_unitario: number
     stock: number
-    proveedor: string
-    categoria: string
-    tipo: string
+    id_proveedor: number
+    id_categoria: number
+    id_tipo: number
     fecha_vencimiento: Date
     detalles: string
 }

@@ -3,7 +3,7 @@ import { clientesRouter } from "./routes/clientes.routes"
 import { productosRouter } from "./routes/products.route"
 
 const app = express()
-const port = 3001
+const port = 3002
 
 app.use(express.json())
 
