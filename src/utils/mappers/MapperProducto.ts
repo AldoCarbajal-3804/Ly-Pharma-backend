@@ -1,7 +1,6 @@
 import { Productos } from "../../entities/productos"
 import type { ProductoResponse } from "../../types/productos/response"
 import type { ProductoRequest } from "../../types/productos/request"
-import { randomUUID } from "crypto"
 
 export class MapperProducto {
     
@@ -18,12 +17,8 @@ export class MapperProducto {
     }
 
 
-    static fromRequest(
-        request: ProductoRequest,
-        idProducto: string = randomUUID()
-    ): Productos {
+    static fromRequest(request: ProductoRequest): Omit<Productos, "id_producto"> {
         return Productos.create(
-            idProducto,
             request.nombre,
             request.descripcion,
             request.precio_unitario,

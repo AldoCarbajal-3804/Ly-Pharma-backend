@@ -2,7 +2,7 @@ import { productos as ProductosPrisma } from "../generated/prisma/client";
 
 export class Productos
 {
-    public readonly id_producto      : string
+    public readonly id_producto      : number
     public readonly nombre_producto  : string
     public readonly descripcion      : string | null
     public readonly precio_unitario  : number
@@ -14,7 +14,7 @@ export class Productos
     public readonly fecha_vencimiento: Date
 
     private constructor(
-        id_producto      : string,
+        id_producto      : number,
         nombre_producto  : string,
         descripcion      : string | null,
         precio_unitario  : number,
@@ -55,7 +55,6 @@ export class Productos
     }
 
     static create(
-        id_producto: string,
         nombre_producto: string,
         descripcion: string | null,
         precio_unitario: number,
@@ -65,9 +64,9 @@ export class Productos
         id_tipo: number,
         id_categoria: number,
         fecha_vencimiento: Date,
-    ): Productos {
+    ): Omit<Productos, "id_producto"> {
         return new Productos(
-            id_producto,
+            0,
             nombre_producto,
             descripcion,
             precio_unitario,

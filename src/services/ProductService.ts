@@ -27,7 +27,6 @@ export class ProductService {
         const productoEntity = MapperProducto.fromRequest(request)
         const productoPrisma = await prisma.productos.create({
             data: {
-                id_producto: productoEntity.id_producto,
                 nombre_producto: productoEntity.nombre_producto,
                 descripcion: productoEntity.descripcion,
                 precio_unitario: productoEntity.precio_unitario,
@@ -42,7 +41,7 @@ export class ProductService {
         return MapperProducto.toResponse(Productos.fromPrisma(productoPrisma))
     }
 
-    async delete(id_producto: string): Promise<void> {
+    async delete(id_producto: number): Promise<void> {
         await prisma.productos.delete({
             where: {
                 id_producto,
@@ -50,8 +49,8 @@ export class ProductService {
         })
     }
 
-    async update(id_producto: string, request: ProductoRequest): Promise<ProductoResponse> {
-        const productoEntity = MapperProducto.fromRequest(request, id_producto)
+    async update(id_producto: number, request: ProductoRequest): Promise<ProductoResponse> {
+        const productoEntity = MapperProducto.fromRequest(request)
         const productoPrisma = await prisma.productos.update({
             where: {
                 id_producto,
