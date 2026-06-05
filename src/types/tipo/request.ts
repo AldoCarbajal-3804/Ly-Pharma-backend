@@ -1,4 +1,4 @@
-export type CategoriaRequest = {
+export type TipoRequest = {
     nombre: string
     descripcion: string
 }

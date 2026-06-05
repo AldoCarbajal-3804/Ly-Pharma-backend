@@ -1,3 +1,3 @@
 export type ProveedorResponse = {
-    nombre: string
+    nombre_empresa: string
 }

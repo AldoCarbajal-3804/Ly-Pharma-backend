@@ -1,4 +1,4 @@
 export type ProveedorRequest = {
-    nombre: string
+    nombre_empresa: string
     descripcion: string
 }
