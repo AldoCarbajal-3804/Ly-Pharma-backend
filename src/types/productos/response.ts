@@ -5,5 +5,6 @@ export interface ProductoResponse{
     precio_unitario: number
     categoria: string
     tipo: string
+    proveedor: string
     fecha_vencimiento: Date
 }
