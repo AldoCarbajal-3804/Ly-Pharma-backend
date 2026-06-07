@@ -63,7 +63,7 @@ model clientes {
   id_cliente Int      @id @default(autoincrement())
   nombres    String
   apellidos  String
-  dni        String   @db.Char(8)
+  dni        String   @unique @db.Char(8)
 
   ventas ventas[]
 }
@@ -74,6 +74,7 @@ model ventas {
   id_empleado Int
   fecha_venta DateTime  @db.Timestamptz(6)
   total_venta Decimal   @db.Decimal()
+  igv         Decimal   @db.Decimal() @default(0)
 
   cliente  clientes        @relation(fields: [id_cliente], references: [id_cliente])
   empleado empleados       @relation(fields: [id_empleado], references: [id_empleado])
@@ -85,7 +86,7 @@ model detalle_venta {
   id_venta              Int
   id_producto           Int
   cantidad              Int
-  precio_unitario_venta Decimal  @db.Decimal()
+  precio_unitario_venta Decimal  @db.Decimal() @default(0)
 
   venta    ventas    @relation(fields: [id_venta], references: [id_venta])
   producto productos @relation(fields: [id_producto], references: [id_producto])
