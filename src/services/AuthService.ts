@@ -2,15 +2,16 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { prisma } from "../config/database"
 import { env } from "../config/env"
-import type { LoginRequest } from "../utils/consults/login/request"
+import { loginSchema } from "../utils/consults/login/request"
 import type { LoginResponse } from "../utils/consults/login/response"
 
 export class AuthService {
 
-    async login(data: LoginRequest): Promise<LoginResponse> {
+    async login(data: unknown): Promise<LoginResponse> {
+        const { username, password } = loginSchema.parse(data)
         
         const usuario = await prisma.usuarios.findUnique({
-            where: { username: data.username },
+            where: { username },
             include: { rol: true },
         })
 
@@ -18,7 +19,7 @@ export class AuthService {
             throw new Error("Credenciales inválidas")
         }
 
-        const passwordValida = await bcrypt.compare(data.password, usuario.password_hash)
+        const passwordValida = await bcrypt.compare(password, usuario.password_hash)
         if (!passwordValida) {
             throw new Error("Credenciales inválidas")
         }

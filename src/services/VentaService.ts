@@ -1,19 +1,12 @@
 import { prisma } from "../config/database"
-import type { CreateVentaRequest } from "../types/ventas/request"
+import { createVentaSchema } from "../types/ventas/request"
 import type { VentaResponse, PaginatedVentasResponse } from "../types/ventas/response"
 import { MapperVenta } from "../utils/mappers/MapperVenta"
 
 export class VentaService {
 
-    async create(data: CreateVentaRequest, idEmpleado: number): Promise<VentaResponse> {
-        const { cliente: c, productos } = data
-
-        if (!c.dni || c.dni.length !== 8) {
-            throw new Error("El DNI debe tener 8 dígitos")
-        }
-        if (!productos || productos.length === 0) {
-            throw new Error("Debe incluir al menos un producto")
-        }
+    async create(data: unknown, idEmpleado: number): Promise<VentaResponse> {
+        const { cliente: c, productos } = createVentaSchema.parse(data)
 
         const cliente = await prisma.clientes.upsert({
             where: { dni: c.dni },
