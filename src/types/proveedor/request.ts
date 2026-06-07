@@ -4,7 +4,7 @@ export const createProveedorSchema = z.object({
     nombre_empresa: z.string().min(1, "El nombre de la empresa es obligatorio"),
     direccion: z.string().nullable(),
     telefono: z.string().nullable(),
-    correo_electronico: z.string().email("El correo electrónico no es válido").nullable(),
+    correo_electronico: z.email().nullable(),
     detalles: z.string().nullable(),
 })
 
