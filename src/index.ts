@@ -6,6 +6,7 @@ import { categoriaRouter } from "./routes/categoria.routes"
 import { tiposRouter } from "./routes/tipos.routes"
 import { proveedorRouter } from "./routes/proveedor.routes"
 import { authRouter } from "./routes/auth.routes"
+import { ventasRouter } from "./routes/ventas.routes"
 
 const app = express()
 const port = 3000
@@ -22,6 +23,7 @@ app.use("/api/productos", productosRouter)
 app.use("/api/categorias", categoriaRouter)
 app.use("/api/tipos", tiposRouter)
 app.use("/api/proveedores", proveedorRouter)
+app.use("/api/ventas", ventasRouter)
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Error:", err.message)
