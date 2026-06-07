@@ -1,9 +1,11 @@
-import { Router } from "express";
-import { ProductoController } from "../controller/ProductoController";
+import { Router } from "express"
+import { ProductoController } from "../controller/ProductoController"
+import { authenticate } from "../middleware/authenticate"
+import { authorize } from "../middleware/authorize"
 
-export const productosRouter = Router();
+export const productosRouter = Router()
 
-productosRouter.get("/", ProductoController.list);
-productosRouter.post("/", ProductoController.create);
-productosRouter.delete("/:id_producto", ProductoController.delete);
-productosRouter.put("/:id_producto", ProductoController.update);
+productosRouter.get("/", authenticate, authorize("Admin", "Empleado"), ProductoController.list)
+productosRouter.post("/", authenticate, authorize("Admin"), ProductoController.create)
+productosRouter.delete("/:id_producto", authenticate, authorize("Admin"), ProductoController.delete)
+productosRouter.put("/:id_producto", authenticate, authorize("Admin"), ProductoController.update)
