@@ -7,24 +7,24 @@ datasource db {
 }
 
 enum EnumCategoria {
-  Antibiotico
-  Analgesico
-  Antihistaminico
-  Antiinflamatorio
-  Gastrointestinal
-  Antidiabetico
-  Cardiovascular
-  Respiratorio
-  Neurologico
-  Dermatologico
-  Suplemento
+  antibiotico
+  analgesico
+  antihistaminico
+  antiinflamatorio
+  gastrointestinal
+  antidiabetico
+  cardiovascular
+  respiratorio
+  neurologico
+  dermatologico
+  suplemento
 }
 
 enum EnumTipo {
-  Tabletas
-  Capsulas
-  Inhalador
-  Crema
+  tableta
+  capsula
+  inhalador
+  crema
 }
 
 model empleados {
