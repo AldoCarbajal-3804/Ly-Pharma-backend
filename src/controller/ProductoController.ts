@@ -1,5 +1,6 @@
-import type { Request, Response } from "express"
+import type { Request, Response, NextFunction } from "express"
 import { ProductService } from "../services/ProductService"
+import { ZodError } from "zod"
 import type { ProductoFilters } from "../types/productos/filters"
 
 const service = new ProductService()
@@ -33,20 +34,34 @@ export class ProductoController {
         res.json(result)
     }
 
-    static async create(req: Request, res: Response): Promise<void> {
-        const producto = await service.create(req.body)
-        res.status(201).json(producto)
+    static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const producto = await service.create(req.body)
+            res.status(201).json(producto)
+        } catch (error) {
+            if (error instanceof ZodError) { next(error); return }
+            next(error)
+        }
     }
 
-    static async delete(req: Request, res: Response): Promise<void> {
-        const { id_producto } = req.params
-        await service.delete(Number(id_producto))
-        res.status(204).send()
+    static async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { id_producto } = req.params
+            await service.delete(Number(id_producto))
+            res.status(204).send()
+        } catch (error) {
+            next(error)
+        }
     }
 
-    static async update(req: Request, res: Response): Promise<void> {
-        const { id_producto } = req.params
-        const producto = await service.update(Number(id_producto), req.body)
-        res.json(producto)
+    static async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { id_producto } = req.params
+            const producto = await service.update(Number(id_producto), req.body)
+            res.json(producto)
+        } catch (error) {
+            if (error instanceof ZodError) { next(error); return }
+            next(error)
+        }
     }
 }

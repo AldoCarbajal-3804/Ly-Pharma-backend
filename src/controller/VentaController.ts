@@ -1,31 +1,28 @@
-import type { Request, Response } from "express"
+import type { Request, Response, NextFunction } from "express"
 import { VentaService } from "../services/VentaService"
-import type { CreateVentaRequest } from "../types/ventas/request"
+import { ZodError } from "zod"
 
 const service = new VentaService()
 
 export class VentaController {
 
-    static async create(req: Request, res: Response): Promise<void> {
+    static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const data: CreateVentaRequest = req.body
             const idEmpleado = res.locals.user.id_empleado
-
-            if (!data.cliente || !data.productos) {
-                res.status(400).json({ message: "cliente y productos son requeridos" })
-                return
-            }
-
-            const venta = await service.create(data, idEmpleado)
+            const venta = await service.create(req.body, idEmpleado)
             res.status(201).json(venta)
         } catch (error) {
+            if (error instanceof ZodError) {
+                next(error)
+                return
+            }
             const message = error instanceof Error ? error.message : "Error interno del servidor"
-            const status = message.startsWith("Stock insuficiente") || message.includes("no encontrado") || message.includes("DNI") || message.includes("Debe incluir") ? 400 : 500
+            const status = message.startsWith("Stock insuficiente") || message.includes("no encontrado") ? 400 : 500
             res.status(status).json({ message })
         }
     }
 
-    static async getById(req: Request, res: Response): Promise<void> {
+    static async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const idVenta = Number(req.params.id_venta)
             if (Number.isNaN(idVenta)) {
@@ -35,13 +32,11 @@ export class VentaController {
             const venta = await service.getById(idVenta)
             res.json(venta)
         } catch (error) {
-            const message = error instanceof Error ? error.message : "Error interno del servidor"
-            const status = message === "Venta no encontrada" ? 404 : 500
-            res.status(status).json({ message })
+            next(error)
         }
     }
 
-    static async list(req: Request, res: Response): Promise<void> {
+    static async list(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const limit = Number(req.query.limit)
             const offset = Number(req.query.offset)
@@ -62,8 +57,7 @@ export class VentaController {
             })
             res.json(result)
         } catch (error) {
-            const message = error instanceof Error ? error.message : "Error interno del servidor"
-            res.status(500).json({ message })
+            next(error)
         }
     }
 }

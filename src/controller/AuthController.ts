@@ -1,23 +1,17 @@
-import type { Request, Response } from "express"
+import type { Request, Response, NextFunction } from "express"
 import { AuthService } from "../services/AuthService"
-import type { LoginRequest } from "../utils/consults/login/request"
+import { ZodError } from "zod"
 
 const service = new AuthService()
 
 export class AuthController {
 
-    static async login(req: Request, res: Response): Promise<void> {
+    static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const data: LoginRequest = req.body
-
-            if (!data.username || !data.password) {
-                res.status(400).json({ message: "Username y password son requeridos" })
-                return
-            }
-
-            const result = await service.login(data)
+            const result = await service.login(req.body)
             res.json(result)
         } catch (error) {
+            if (error instanceof ZodError) { next(error); return }
             const message = error instanceof Error ? error.message : "Error interno del servidor"
             const status = message === "Credenciales inválidas" ? 401 : 500
             res.status(status).json({ message })
