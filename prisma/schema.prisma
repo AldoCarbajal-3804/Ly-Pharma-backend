@@ -7,22 +7,22 @@ datasource db {
 }
 
 enum EnumCategoria {
-  Antibiotico @map("Antibiótico")
-  Analgesico  @map("Analgésico")
-  Antihistaminico @map("Antihistamínico")
-  Antiinflamatorio @map("Antiinflamatorio")
+  Antibiotico
+  Analgesico
+  Antihistaminico
+  Antiinflamatorio
   Gastrointestinal
-  Antidiabetico @map("Antidiabético")
+  Antidiabetico
   Cardiovascular
   Respiratorio
-  Neurologico @map("Neurológico")
-  Dermatologico @map("Dermatológico")
+  Neurologico
+  Dermatologico
   Suplemento
 }
 
 enum EnumTipo {
   Tabletas
-  Capsulas  @map("Cápsulas")
+  Capsulas
   Inhalador
   Crema
 }
