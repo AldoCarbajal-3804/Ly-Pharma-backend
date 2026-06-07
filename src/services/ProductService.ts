@@ -1,47 +1,57 @@
 import { prisma } from "../config/database"
 import type { ProductoRequest } from "../types/productos/request"
 import type { ProductoFilters } from "../types/productos/filters"
-import type { ProductoResponse } from "../types/productos/response"
+import type { ProductoResponse, PaginatedResponse } from "../types/productos/response"
 import { MapperProducto } from "../utils/mappers/MapperProducto"
 
 export class ProductService {
 
-    async list(filters?: ProductoFilters): Promise<ProductoResponse[]> {
+    async list(filters?: ProductoFilters): Promise<PaginatedResponse<ProductoResponse>> {
         const where: Record<string, unknown> = {}
 
         if (filters?.categoria_id) {
             where.id_categoria = filters.categoria_id
-        } else if (filters?.categoria) {
+        } else if (filters?.categoria?.toLowerCase) {
             const cat = await prisma.categorias.findFirst({
-                where: { nombre: filters.categoria as any },
+                where: { nombre: filters.categoria.toLowerCase() as any },
             })
             if (cat) where.id_categoria = cat.id_categoria
         }
 
         if (filters?.tipo_id) {
             where.id_tipo = filters.tipo_id
-        } else if (filters?.tipo) {
+        } else if (filters?.tipo?.toLowerCase) {
             const tip = await prisma.tipos_medicamento.findFirst({
-                where: { nombre: filters.tipo as any },
+                where: { nombre: filters.tipo.toLowerCase() as any },
             })
             if (tip) where.id_tipo = tip.id_tipo
         }
 
         if (filters?.proveedor_id) {
             where.id_proveedor = filters.proveedor_id
-        } else if (filters?.proveedor) {
+        } else if (filters?.proveedor?.toLowerCase) {
             const prov = await prisma.proveedores.findFirst({
-                where: { nombre_empresa: filters.proveedor },
+                where: { nombre_empresa: filters.proveedor.toLowerCase() as any },
             })
             if (prov) where.id_proveedor = prov.id_proveedor
         }
 
-        const productos = await prisma.productos.findMany({
+    const [productos, total] = await Promise.all([
+        prisma.productos.findMany({
             where,
             include: { categoria: true, tipo: true, proveedor: true },
-        })
+            take: filters?.limit,
+            skip: filters?.offset,
+        }),
+        prisma.productos.count({ where }),
+    ])
 
-        return productos.map(p => MapperProducto.toResponse(p))
+    return {
+            data: productos.map(p => MapperProducto.toResponse(p)),
+            total,
+            limit: filters?.limit ?? null,
+            offset: filters?.offset ?? null,
+        }
     }
 
     async create(request: ProductoRequest): Promise<ProductoResponse> {
@@ -60,7 +70,7 @@ export class ProductService {
             },
         })
         return MapperProducto.toResponse(
-            await prisma.productos.findUniqueOrThrow({
+        await prisma.productos.findUniqueOrThrow({
                 where: { id_producto: productoPrisma.id_producto },
                 include: { categoria: true, tipo: true, proveedor: true },
             })
@@ -76,24 +86,24 @@ export class ProductService {
     async update(id_producto: number, request: ProductoRequest): Promise<ProductoResponse> {
         const productoEntity = await MapperProducto.fromRequest(request)
         await prisma.productos.update({
-            where: { id_producto },
-            data: {
-                    nombre_producto: productoEntity.nombre_producto,
-                    descripcion: productoEntity.descripcion,
-                    precio_unitario: productoEntity.precio_unitario,
-                    cantidad_stock: productoEntity.cantidad_stock,
-                    id_proveedor: productoEntity.id_proveedor,
-                    detalles: productoEntity.detalles,
-                    id_tipo: productoEntity.id_tipo,
-                    id_categoria: productoEntity.id_categoria,
-                    fecha_vencimiento: productoEntity.fecha_vencimiento,
-                },
-            })
-        return MapperProducto.toResponse(
+        where: { id_producto },
+        data: {
+            nombre_producto: productoEntity.nombre_producto,
+            descripcion: productoEntity.descripcion,
+            precio_unitario: productoEntity.precio_unitario,
+            cantidad_stock: productoEntity.cantidad_stock,
+            id_proveedor: productoEntity.id_proveedor,
+            detalles: productoEntity.detalles,
+            id_tipo: productoEntity.id_tipo,
+            id_categoria: productoEntity.id_categoria,
+            fecha_vencimiento: productoEntity.fecha_vencimiento,
+        },
+    })
+    return MapperProducto.toResponse(
             await prisma.productos.findUniqueOrThrow({
-                where: { id_producto },
-                include: { categoria: true, tipo: true, proveedor: true },
-            })
-        )
+                    where: { id_producto },
+                    include: { categoria: true, tipo: true, proveedor: true },
+                })
+            )
     }
 }
