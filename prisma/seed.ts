@@ -41,14 +41,14 @@ async function main() {
   })
 
   await prisma.usuarios.upsert({
-    where: { id_usuario: 1 },
-    update: { password_hash: passwordHash },
+    where: { id_usuario: 7 },
+    update: { password_hash: await bcrypt.hash("ana123", 10) },
     create: {
-      id_usuario: 1,
-      id_empleado: adminEmpleado.id_empleado,
-      username: "admin",
-      password_hash: passwordHash,
-      id_rol: 1,
+      id_usuario: 7,
+      id_empleado: empleado2.id_empleado,
+      username: "ana_m",
+      password_hash: await bcrypt.hash("ana123", 10),
+      id_rol: 2,
     },
   })
 
