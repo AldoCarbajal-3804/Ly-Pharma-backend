@@ -7,6 +7,7 @@ import { tiposRouter } from "./routes/tipos.routes"
 import { proveedorRouter } from "./routes/proveedor.routes"
 import { authRouter } from "./routes/auth.routes"
 import { ventasRouter } from "./routes/ventas.routes"
+import { handleValidationError } from "./middleware/handleValidationError"
 
 const app = express()
 const port = 3000
@@ -24,6 +25,8 @@ app.use("/api/categorias", categoriaRouter)
 app.use("/api/tipos", tiposRouter)
 app.use("/api/proveedores", proveedorRouter)
 app.use("/api/ventas", ventasRouter)
+
+app.use(handleValidationError)
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Error:", err.message)
