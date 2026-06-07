@@ -49,6 +49,7 @@ model usuarios {
 
   empleado empleados @relation(fields: [id_empleado], references: [id_empleado])
   rol      roles      @relation(fields: [id_rol], references: [id_rol])
+  sesiones sesiones[]
 }
 
 model roles {
@@ -90,12 +91,22 @@ model detalle_venta {
   producto productos @relation(fields: [id_producto], references: [id_producto])
 }
 
+model sesiones {
+  id_sesion  Int         @id @default(autoincrement())
+  id_usuario Int
+  inicio     DateTime    @db.Timestamptz(6) @default(now())
+  fin        DateTime?   @db.Timestamptz(6)
+  activa     Boolean     @default(true)
+
+  usuario usuarios @relation(fields: [id_usuario], references: [id_usuario])
+}
+
 model productos {
   id_producto      Int      @id @default(autoincrement())
   nombre_producto  String
   descripcion      String?
   precio_unitario  Decimal  @db.Decimal()
-  fecha_vencimiento DateTime @db.Timestamptz(6)
+  fecha_vencimiento DateTime @db.Date
   cantidad_stock   Int
   id_proveedor     Int
   detalles         String?
