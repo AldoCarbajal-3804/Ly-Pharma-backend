@@ -17,4 +17,14 @@ export class AuthController {
             res.status(status).json({ message })
         }
     }
+
+    static async logout(_req: Request, res: Response): Promise<void> {
+        try {
+            await service.logout(res.locals.user.id_usuario)
+            res.json({ message: "Sesión cerrada exitosamente" })
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Error interno del servidor"
+            res.status(500).json({ message })
+        }
+    }
 }
