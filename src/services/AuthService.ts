@@ -36,9 +36,26 @@ export class AuthService {
             expiresIn: env.JWT_EXPIRES_IN as string,
         } as jwt.SignOptions)
 
+        await prisma.sesiones.updateMany({
+            where: { id_usuario: usuario.id_usuario, activa: true },
+            data: { fin: new Date(), activa: false },
+        })
+
+        const sesion = await prisma.sesiones.create({
+            data: { id_usuario: usuario.id_usuario },
+        })
+
         return {
             token,
             role: usuario.rol.nombre_rol,
+            id_sesion: sesion.id_sesion,
         }
+    }
+
+    async logout(idUsuario: number): Promise<void> {
+        await prisma.sesiones.updateMany({
+            where: { id_usuario: idUsuario, activa: true },
+            data: { fin: new Date(), activa: false },
+        })
     }
 }
