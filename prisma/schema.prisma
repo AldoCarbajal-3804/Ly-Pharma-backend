@@ -45,7 +45,9 @@ model usuarios {
   username      String    @unique
   password_hash String
   id_rol        Int
-  auth_id       String?   @db.Uuid
+  auth_id         String    @unique @db.Uuid
+  recovery_token  String?
+  recovery_expires DateTime? @db.Timestamptz(6)
 
   empleado empleados @relation(fields: [id_empleado], references: [id_empleado])
   rol      roles      @relation(fields: [id_rol], references: [id_rol])
