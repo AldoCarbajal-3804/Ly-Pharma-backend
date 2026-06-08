@@ -3,6 +3,7 @@ import { createProductoSchema, updateProductoSchema } from "../types/productos/r
 import type { ProductoFilters } from "../types/productos/filters"
 import type { ProductoResponse, PaginatedResponse } from "../types/productos/response"
 import { MapperProducto } from "../utils/mappers/MapperProducto"
+import type { productos } from "../generated/prisma/client"
 
 export class ProductService {
 
@@ -47,7 +48,7 @@ export class ProductService {
     ])
 
     return {
-            data: productos.map(p => MapperProducto.toResponse(p)),
+            data: productos.map((p: productos) => MapperProducto.toResponse(p)),
             total,
             limit: filters?.limit ?? null,
             offset: filters?.offset ?? null,
