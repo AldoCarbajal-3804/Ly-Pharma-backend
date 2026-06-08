@@ -17,10 +17,12 @@
   },
   "scripts": {
     "dev": "nodemon src/index.ts",
+    "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts",
     "seed": "prisma db seed --config prisma.config.ts",
-    "client": "prisma generate --config prisma.config.ts "
+    "client": "prisma generate --config prisma.config.ts",
+    "postinstall": "prisma generate --config prisma.config.ts"
   },
   "keywords": [],
   "author": "",
