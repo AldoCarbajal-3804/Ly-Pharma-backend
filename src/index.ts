@@ -1,5 +1,7 @@
 import express from "express"
 import type { Request, Response, NextFunction } from "express"
+import cors from "cors"
+import { env } from "./config/env"
 import { clientesRouter } from "./routes/clientes.routes"
 import { productosRouter } from "./routes/products.route"
 import { categoriaRouter } from "./routes/categoria.routes"
@@ -11,7 +13,17 @@ import { perfilRouter } from "./routes/perfil.routes"
 import { handleValidationError } from "./middleware/handleValidationError"
 
 const app = express()
-const port = 3000
+const { PORT, CORS_ORIGINS, API_PREFIX } = env
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || CORS_ORIGINS.includes(origin)) {
+      return callback(null, true)
+    }
+
+    return callback(new Error("Origen no permitido"))
+  }
+}))
 
 app.use(express.json())
 
@@ -19,14 +31,14 @@ app.get("/", (_req, res) => {
   res.json({ message: "Hello World" })
 })
 
-app.use("/api/auth", authRouter)
-app.use("/api/clientes", clientesRouter)
-app.use("/api/productos", productosRouter)
-app.use("/api/categorias", categoriaRouter)
-app.use("/api/tipos", tiposRouter)
-app.use("/api/proveedores", proveedorRouter)
-app.use("/api/ventas", ventasRouter)
-app.use("/api/perfil", perfilRouter)
+app.use(`${API_PREFIX}/auth`, authRouter)
+app.use(`${API_PREFIX}/clientes`, clientesRouter)
+app.use(`${API_PREFIX}/productos`, productosRouter)
+app.use(`${API_PREFIX}/categorias`, categoriaRouter)
+app.use(`${API_PREFIX}/tipos`, tiposRouter)
+app.use(`${API_PREFIX}/proveedores`, proveedorRouter)
+app.use(`${API_PREFIX}/ventas`, ventasRouter)
+app.use(`${API_PREFIX}/perfil`, perfilRouter)
 
 app.use(handleValidationError)
 
@@ -35,6 +47,6 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ message: "Error interno del servidor" })
 })
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`)
 })
