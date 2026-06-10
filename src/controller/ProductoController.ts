@@ -34,6 +34,24 @@ export class ProductoController {
         res.json(result)
     }
 
+    static async listLowStock(_req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const productos = await service.listLowStock()
+            res.json(productos)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static async listExpiring(_req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const productos = await service.listExpiring()
+            res.json(productos)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const producto = await service.create(req.body)

@@ -55,6 +55,30 @@ export class ProductService {
         }
     }
 
+    async listLowStock(umbral = 10): Promise<{ nombre: string; stock: number }[]> {
+        const productos = await prisma.productos.findMany({
+            where: { cantidad_stock: { lt: umbral } },
+            select: { nombre_producto: true, cantidad_stock: true },
+            orderBy: { cantidad_stock: "asc" },
+        })
+        return productos.map((p) => ({ nombre: p.nombre_producto, stock: p.cantidad_stock }))
+    }
+
+    async listExpiring(dias = 60): Promise<{ nombre: string; stock: number; fecha_vencimiento: string }[]> {
+        const fechaLimite = new Date()
+        fechaLimite.setDate(fechaLimite.getDate() + dias)
+        const productos = await prisma.productos.findMany({
+            where: { fecha_vencimiento: { lte: fechaLimite } },
+            select: { nombre_producto: true, cantidad_stock: true, fecha_vencimiento: true },
+            orderBy: { fecha_vencimiento: "asc" },
+        })
+        return productos.map((p) => ({
+            nombre: p.nombre_producto,
+            stock: p.cantidad_stock,
+            fecha_vencimiento: p.fecha_vencimiento.toISOString().split("T")[0],
+        }))
+    }
+
     async create(request: unknown): Promise<ProductoResponse> {
         const parsed = createProductoSchema.parse(request)
         const productoEntity = await MapperProducto.fromRequest(parsed)

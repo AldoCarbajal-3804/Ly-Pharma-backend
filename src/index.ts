@@ -10,6 +10,7 @@ import { proveedorRouter } from "./routes/proveedor.routes"
 import { authRouter } from "./routes/auth.routes"
 import { ventasRouter } from "./routes/ventas.routes"
 import { perfilRouter } from "./routes/perfil.routes"
+import { dashboardRouter } from "./routes/dashboard.routes"
 import { handleValidationError } from "./middleware/handleValidationError"
 
 const app = express()
@@ -39,6 +40,7 @@ app.use(`${API_PREFIX}/tipos`, tiposRouter)
 app.use(`${API_PREFIX}/proveedores`, proveedorRouter)
 app.use(`${API_PREFIX}/ventas`, ventasRouter)
 app.use(`${API_PREFIX}/perfil`, perfilRouter)
+app.use(`${API_PREFIX}/dashboard`, dashboardRouter)
 
 app.use(handleValidationError)
 
