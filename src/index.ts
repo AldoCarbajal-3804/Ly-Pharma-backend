@@ -10,7 +10,6 @@ import { proveedorRouter } from "./routes/proveedor.routes"
 import { authRouter } from "./routes/auth.routes"
 import { ventasRouter } from "./routes/ventas.routes"
 import { perfilRouter } from "./routes/perfil.routes"
-import { inicioRouter } from "./routes/inicio.routes"
 import { muestraRouter } from "./routes/muestra.routes"
 import { handleValidationError } from "./middleware/handleValidationError"
 
@@ -41,7 +40,6 @@ app.use(`${API_PREFIX}/tipos`, tiposRouter)
 app.use(`${API_PREFIX}/proveedores`, proveedorRouter)
 app.use(`${API_PREFIX}/ventas`, ventasRouter)
 app.use(`${API_PREFIX}/perfil`, perfilRouter)
-app.use(`${API_PREFIX}/inicio`, inicioRouter)
 app.use(`${API_PREFIX}/muestra`, muestraRouter)
 
 app.use(handleValidationError)
