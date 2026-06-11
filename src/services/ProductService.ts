@@ -37,10 +37,6 @@ export class ProductService {
             if (prov) where.id_proveedor = prov.id_proveedor
         }
 
-        if (filters?.search) {
-            where.nombre_producto = { contains: filters.search, mode: "insensitive" }
-        }
-
     const [productos, total] = await Promise.all([
         prisma.productos.findMany({
             where,

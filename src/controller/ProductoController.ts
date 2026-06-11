@@ -24,8 +24,6 @@ export class ProductoController {
         const provId = Number(q.proveedor_id)
         if (!Number.isNaN(provId)) filters.proveedor_id = provId
 
-        if (typeof q.search === "string") filters.search = q.search
-
         const limit = Number(q.limit)
         if (!Number.isNaN(limit)) filters.limit = limit
 
