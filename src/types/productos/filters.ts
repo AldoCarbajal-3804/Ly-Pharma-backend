@@ -5,6 +5,7 @@ export interface ProductoFilters {
     tipo_id?: number
     proveedor?: string
     proveedor_id?: number
+    search?: string
     limit?: number
     offset?: number
 }
