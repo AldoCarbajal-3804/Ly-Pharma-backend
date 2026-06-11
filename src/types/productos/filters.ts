@@ -7,4 +7,6 @@ export interface ProductoFilters {
     proveedor_id?: number
     limit?: number
     offset?: number
+    stock?: "asc" | "desc"
+    vencimiento?: "asc" | "desc"
 }

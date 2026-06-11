@@ -37,10 +37,15 @@ export class ProductService {
             if (prov) where.id_proveedor = prov.id_proveedor
         }
 
+        const orderBy: Record<string, "asc" | "desc">[] = []
+        if (filters?.stock) orderBy.push({ cantidad_stock: filters.stock })
+        if (filters?.vencimiento) orderBy.push({ fecha_vencimiento: filters.vencimiento })
+
     const [productos, total] = await Promise.all([
         prisma.productos.findMany({
             where,
             include: { categoria: true, tipo: true, proveedor: true },
+            orderBy: orderBy.length > 0 ? orderBy : undefined,
             take: filters?.limit,
             skip: filters?.offset,
         }),

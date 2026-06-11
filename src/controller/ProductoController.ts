@@ -24,6 +24,9 @@ export class ProductoController {
         const provId = Number(q.proveedor_id)
         if (!Number.isNaN(provId)) filters.proveedor_id = provId
 
+        if (q.stock === "asc" || q.stock === "desc") filters.stock = q.stock
+        if (q.vencimiento === "asc" || q.vencimiento === "desc") filters.vencimiento = q.vencimiento
+
         const limit = Number(q.limit)
         if (!Number.isNaN(limit)) filters.limit = limit
 
