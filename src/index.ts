@@ -11,6 +11,7 @@ import { authRouter } from "./routes/auth.routes"
 import { ventasRouter } from "./routes/ventas.routes"
 import { perfilRouter } from "./routes/perfil.routes"
 import { muestraRouter } from "./routes/muestra.routes"
+import { sesionesRouter } from "./routes/sesiones.routes"
 import { handleValidationError } from "./middleware/handleValidationError"
 
 const app = express()
@@ -41,6 +42,7 @@ app.use(`${API_PREFIX}/proveedores`, proveedorRouter)
 app.use(`${API_PREFIX}/ventas`, ventasRouter)
 app.use(`${API_PREFIX}/perfil`, perfilRouter)
 app.use(`${API_PREFIX}/muestra`, muestraRouter)
+app.use(`${API_PREFIX}/sesiones`, sesionesRouter)
 
 app.use(handleValidationError)
 
