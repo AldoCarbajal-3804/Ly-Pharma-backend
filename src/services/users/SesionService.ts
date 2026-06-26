@@ -4,9 +4,11 @@ import { MapperSesion } from "../../utils/mappers/MapperSesion"
 
 export class SesionService {
 
-    async listRecent(id_usuario: number): Promise<ResponseSessions[]> {
+    async listRecent(id_usuario?: number): Promise<ResponseSessions[]> {
+        const where = id_usuario !== undefined ? { id_usuario } : {}
+
         const sesiones = await prisma.sesiones.findMany({
-            where: { id_usuario },
+            where,
             include: {
                 usuario: {
                     include: { empleado: true },
