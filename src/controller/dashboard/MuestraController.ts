@@ -7,7 +7,12 @@ export class MuestraController {
 
     static async index(_req: Request, res: Response): Promise<void> {
         try {
-            const data = await service.getEmployeeSummary(res.locals.user.id_empleado)
+            const { nombre_rol, id_empleado } = res.locals.user
+
+            const data = nombre_rol === "Admin"
+                ? await service.getAdminSummary()
+                : await service.getEmployeeSummary(id_empleado)
+
             res.json(data)
         } catch (error) {
             const message = error instanceof Error ? error.message : "Error interno del servidor"
