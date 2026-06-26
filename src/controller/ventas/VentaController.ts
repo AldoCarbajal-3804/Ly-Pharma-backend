@@ -43,9 +43,12 @@ export class VentaController {
             const user = res.locals.user
 
             let filterEmpleado: number | undefined
+            let nombreEmpleado: string | undefined
+
             if (user.nombre_rol === "Admin") {
                 const q = Number(req.query.id_empleado)
-            if (!Number.isNaN(q)) filterEmpleado = q
+                if (!Number.isNaN(q)) filterEmpleado = q
+                if (typeof req.query.nombre_empleado === "string") nombreEmpleado = req.query.nombre_empleado
             } else {
                 filterEmpleado = user.id_empleado
             }
@@ -54,6 +57,7 @@ export class VentaController {
                 limit: Number.isNaN(limit) ? undefined : limit,
                 offset: Number.isNaN(offset) ? undefined : offset,
                 idEmpleado: filterEmpleado,
+                nombreEmpleado,
             })
             res.json(result)
         } catch (error) {
