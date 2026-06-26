@@ -2,16 +2,17 @@ import express from "express"
 import type { Request, Response, NextFunction } from "express"
 import cors from "cors"
 import { env } from "./config/env"
-import { clientesRouter } from "./routes/clientes.routes"
+import { clientesRouter } from "./routes/ventas/clientes.routes"
 import { productosRouter } from "./routes/products/products.route"
 import { categoriaRouter } from "./routes/products/categoria.routes"
 import { tiposRouter } from "./routes/products/tipos.routes"
 import { proveedorRouter } from "./routes/products/proveedor.routes"
 import { authRouter } from "./routes/users/auth.routes"
-import { ventasRouter } from "./routes/ventas.routes"
+import { ventasRouter } from "./routes/ventas/ventas.routes"
 import { perfilRouter } from "./routes/users/perfil.routes"
 import { muestraRouter } from "./routes/dashboard/muestra.routes"
 import { sesionesRouter } from "./routes/users/sesiones.routes"
+import { reportsRouter } from "./routes/reports/index"
 import { handleValidationError } from "./middleware/handleValidationError"
 
 const app = express()
@@ -43,6 +44,7 @@ app.use(`${API_PREFIX}/ventas`, ventasRouter)
 app.use(`${API_PREFIX}/perfil`, perfilRouter)
 app.use(`${API_PREFIX}/muestra`, muestraRouter)
 app.use(`${API_PREFIX}/sesiones`, sesionesRouter)
+app.use(`${API_PREFIX}/reportes`, reportsRouter)
 
 app.use(handleValidationError)
 
