@@ -92,10 +92,19 @@ export class VentaService {
         limit?: number
         offset?: number
         idEmpleado?: number
+        nombreEmpleado?: string
     }): Promise<PaginatedVentasResponse> {
         const where: Record<string, unknown> = {}
         if (opts?.idEmpleado) {
             where.id_empleado = opts.idEmpleado
+        }
+        if (opts?.nombreEmpleado) {
+            where.empleado = {
+                OR: [
+                    { nombres: { contains: opts.nombreEmpleado, mode: "insensitive" } },
+                    { apellidos: { contains: opts.nombreEmpleado, mode: "insensitive" } },
+                ],
+            }
         }
 
         const [ventas, total] = await Promise.all([
