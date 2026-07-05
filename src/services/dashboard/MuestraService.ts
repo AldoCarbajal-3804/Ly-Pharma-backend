@@ -1,22 +1,35 @@
 import { prisma } from "../../config/database"
 import type { AdminSummary, EmployeeSummary } from "../../utils/consults/muestra/response"
 
+function getPeruDayRange() {
+    const now = new Date()
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000
+    const peruTime = utc - 5 * 3600000
+    const peruDate = new Date(peruTime)
+
+    const start = new Date(Date.UTC(
+        peruDate.getUTCFullYear(),
+        peruDate.getUTCMonth(),
+        peruDate.getUTCDate(),
+    ))
+
+    const end = new Date(start.getTime() + 86400000)
+    return { start, end }
+}
+
 export class MuestraService {
 
     async getEmployeeSummary(idEmpleado: number): Promise<EmployeeSummary> {
+        const { start, end } = getPeruDayRange()
         const now = new Date()
-        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-        const endOfDay = new Date(startOfDay)
-        endOfDay.setDate(endOfDay.getDate() + 1)
-
-        const twoMonthsAhead = new Date(startOfDay)
-        twoMonthsAhead.setMonth(twoMonthsAhead.getMonth() + 2)
+        const twoMonthsAhead = new Date(start)
+        twoMonthsAhead.setUTCMonth(twoMonthsAhead.getUTCMonth() + 2)
 
         const [ventasHoy, stockBajo, porVencer] = await Promise.all([
             prisma.ventas.findMany({
                 where: {
                     id_empleado: idEmpleado,
-                    fecha_venta: { gte: startOfDay, lt: endOfDay },
+                    fecha_venta: { gte: start, lt: end },
                 },
             }),
             prisma.productos.count({
@@ -38,21 +51,23 @@ export class MuestraService {
     }
 
     async getAdminSummary(): Promise<AdminSummary> {
+        const { start, end } = getPeruDayRange()
         const now = new Date()
-        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-        const endOfDay = new Date(startOfDay)
-        endOfDay.setDate(endOfDay.getDate() + 1)
-
-        const twoMonthsAhead = new Date(startOfDay)
-        twoMonthsAhead.setMonth(twoMonthsAhead.getMonth() + 2)
+        const twoMonthsAhead = new Date(start)
+        twoMonthsAhead.setUTCMonth(twoMonthsAhead.getUTCMonth() + 2)
 
         const [ventasHoy, totalVendidos, stockBajo, porVencer] = await Promise.all([
             prisma.ventas.findMany({
                 where: {
-                    fecha_venta: { gte: startOfDay, lt: endOfDay },
+                    fecha_venta: { gte: start, lt: end },
                 },
             }),
             prisma.detalle_venta.aggregate({
+                where: {
+                    venta: {
+                        fecha_venta: { gte: start, lt: end },
+                    },
+                },
                 _sum: { cantidad: true },
             }),
             prisma.productos.count({
