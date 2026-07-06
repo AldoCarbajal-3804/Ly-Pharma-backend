@@ -3,14 +3,13 @@ import type { AdminSummary, EmployeeSummary } from "../../utils/consults/muestra
 
 function getPeruDayRange() {
     const now = new Date()
-    const utc = now.getTime() + now.getTimezoneOffset() * 60000
-    const peruTime = utc - 5 * 3600000
-    const peruDate = new Date(peruTime)
+    const peru = new Date(now.getTime() - 5 * 3600000)
 
     const start = new Date(Date.UTC(
-        peruDate.getUTCFullYear(),
-        peruDate.getUTCMonth(),
-        peruDate.getUTCDate(),
+        peru.getUTCFullYear(),
+        peru.getUTCMonth(),
+        peru.getUTCDate(),
+        5, 0, 0, 0,
     ))
 
     const end = new Date(start.getTime() + 86400000)
@@ -56,19 +55,10 @@ export class MuestraService {
         const twoMonthsAhead = new Date(start)
         twoMonthsAhead.setUTCMonth(twoMonthsAhead.getUTCMonth() + 2)
 
-        const [ventasHoy, totalVendidos, stockBajo, porVencer] = await Promise.all([
+        const [ventasHoy, stockBajo, porVencer] = await Promise.all([
             prisma.ventas.findMany({
-                where: {
-                    fecha_venta: { gte: start, lt: end },
-                },
-            }),
-            prisma.detalle_venta.aggregate({
-                where: {
-                    venta: {
-                        fecha_venta: { gte: start, lt: end },
-                    },
-                },
-                _sum: { cantidad: true },
+                where: { fecha_venta: { gte: start, lt: end } },
+                include: { detalles: { select: { cantidad: true } } },
             }),
             prisma.productos.count({
                 where: { cantidad_stock: { lt: 10 } },
@@ -81,7 +71,10 @@ export class MuestraService {
         ])
 
         return {
-            total_productos_vendidos: totalVendidos._sum.cantidad ?? 0,
+            total_productos_vendidos: ventasHoy.reduce(
+                (sum, v) => sum + v.detalles.reduce((s, d) => s + d.cantidad, 0),
+                0,
+            ),
             ganancia_diaria: ventasHoy.reduce((sum, v) => sum + Number(v.total_venta), 0),
             stock_bajo: stockBajo,
             productos_por_vencer: porVencer,
