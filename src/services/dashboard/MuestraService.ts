@@ -5,14 +5,14 @@ export class MuestraService {
 
     async getAdminSummary(): Promise<DashboardResumen> {
         const rows = await prisma.$queryRaw<DashboardResumen[]>`
-            SELECT * FROM admin_resumen_diario()
+            SELECT * FROM resumen_admin_diario()
         `
         return rows[0]
     }
 
     async getEmployeeSummary(idEmpleado: number): Promise<DashboardResumen> {
         const rows = await prisma.$queryRaw<DashboardResumen[]>`
-            SELECT * FROM empleado_resumen_diario(${idEmpleado})
+            SELECT * FROM resumen_empleado_diario(${idEmpleado})
         `
         return rows[0]
     }
