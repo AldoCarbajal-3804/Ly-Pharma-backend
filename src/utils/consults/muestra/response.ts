@@ -1,12 +1,6 @@
-export interface EmployeeSummary {
-    total_ventas_dia: number
-    ganancia_diaria: number
-    stock_bajo: number
-    productos_por_vencer: number
-}
-
-export interface AdminSummary {
-    total_productos_vendidos: number
+export interface DashboardResumen {
+    total_ventas: number
+    total_unidades_vendidas: number
     ganancia_diaria: number
     stock_bajo: number
     productos_por_vencer: number
