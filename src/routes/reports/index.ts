@@ -8,7 +8,10 @@ import { authorize } from "../../middleware/authorize"
 
 export const reportsRouter = Router()
 
-reportsRouter.get("/ganancias", authenticate, authorize("Admin", "Empleado"), GananciasController.index)
+reportsRouter.get("/ganancias/dia", authenticate, authorize("Admin", "Empleado"), GananciasController.dia)
+reportsRouter.get("/ganancias/semana", authenticate, authorize("Admin", "Empleado"), GananciasController.semana)
+reportsRouter.get("/ganancias/mes", authenticate, authorize("Admin", "Empleado"), GananciasController.mes)
+reportsRouter.get("/ganancias/anio", authenticate, authorize("Admin", "Empleado"), GananciasController.anio)
 reportsRouter.get("/ranking-empleados", authenticate, authorize("Admin"), RankingController.index)
 reportsRouter.get("/productos-mas-vendidos", authenticate, authorize("Admin", "Empleado"), ProductosMasVendidosController.index)
 reportsRouter.get("/porcentaje-productos", authenticate, authorize("Admin"), PorcentajesController.productos)
