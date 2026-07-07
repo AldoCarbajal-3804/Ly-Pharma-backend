@@ -13,3 +13,4 @@ Server is running on port 3000
 Server is running on port 3000
 [32m[nodemon] restarting due to changes...[39m
 [32m[nodemon] starting `ts-node src/index.ts`[39m
+Server is running on port 3000
