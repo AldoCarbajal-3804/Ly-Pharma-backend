@@ -1,47 +1,71 @@
 import { prisma } from "../../config/database"
-import type { GananciasResponse } from "../../utils/consults/reports/response"
+import type { GananciasResponse, GananciasDetalle } from "../../utils/consults/reports/response"
+
+type FilaRaw = {
+    rango?: string
+    dia?: string
+    semana?: string
+    mes?: string
+    total_ventas: number | bigint | string
+    total_ganancias: number | bigint | string
+}
+
+function normalizarFila(f: FilaRaw): GananciasDetalle {
+    return {
+        ...(f.rango !== undefined && { rango: f.rango }),
+        ...(f.dia !== undefined && { dia: f.dia }),
+        ...(f.semana !== undefined && { semana: f.semana }),
+        ...(f.mes !== undefined && { mes: f.mes }),
+        total_ventas: Number(f.total_ventas),
+        total_ganancias: Number(f.total_ganancias),
+    }
+}
+
+function sumar(filas: GananciasDetalle[]): { total_ventas: number; total_ganancias: number } {
+    return filas.reduce(
+        (acc, f) => ({
+            total_ventas: acc.total_ventas + f.total_ventas,
+            total_ganancias: acc.total_ganancias + f.total_ganancias,
+        }),
+        { total_ventas: 0, total_ganancias: 0 },
+    )
+}
 
 export class GananciasService {
 
-    async getGanancias(periodo: string, idEmpleado?: number): Promise<GananciasResponse> {
-        const now = new Date()
-        let start: Date
+    async getGananciasDia(idEmpleado?: number): Promise<GananciasResponse> {
+        const raw = await prisma.$queryRaw<FilaRaw[]>`
+            SELECT rango, total_ventas, total_ganancias FROM ganancias_dia(${idEmpleado ?? null}::INT)
+        `
+        const detalle = raw.map(normalizarFila)
+        const { total_ventas, total_ganancias } = sumar(detalle)
+        return { periodo: "dia", detalle, total_ventas, total_ganancias }
+    }
 
-        switch (periodo) {
-            case "dia":
-                start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-                break
-            case "semana":
-                start = new Date(now)
-                start.setDate(start.getDate() - start.getDay())
-                start.setHours(0, 0, 0, 0)
-                break
-            case "mes":
-                start = new Date(now.getFullYear(), now.getMonth(), 1)
-                break
-            case "anio":
-                start = new Date(now.getFullYear(), 0, 1)
-                break
-            default:
-                start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-        }
+    async getGananciasSemana(idEmpleado?: number): Promise<GananciasResponse> {
+        const raw = await prisma.$queryRaw<FilaRaw[]>`
+            SELECT dia, total_ventas, total_ganancias FROM ganancias_semana(${idEmpleado ?? null}::INT)
+        `
+        const detalle = raw.map(normalizarFila)
+        const { total_ventas, total_ganancias } = sumar(detalle)
+        return { periodo: "semana", detalle, total_ventas, total_ganancias }
+    }
 
-        const where: Record<string, unknown> = {
-            fecha_venta: { gte: start, lte: now },
-        }
-        if (idEmpleado !== undefined) {
-            where.id_empleado = idEmpleado
-        }
+    async getGananciasMes(idEmpleado?: number): Promise<GananciasResponse> {
+        const raw = await prisma.$queryRaw<FilaRaw[]>`
+            SELECT semana, total_ventas, total_ganancias FROM ganancias_mes(${idEmpleado ?? null}::INT)
+        `
+        const detalle = raw.map(normalizarFila)
+        const { total_ventas, total_ganancias } = sumar(detalle)
+        return { periodo: "mes", detalle, total_ventas, total_ganancias }
+    }
 
-        const ventas = await prisma.ventas.findMany({
-            where,
-            select: { total_venta: true },
-        })
-
-        return {
-            periodo,
-            total_ventas: ventas.length,
-            total_ganancias: ventas.reduce((sum, v) => sum + Number(v.total_venta), 0),
-        }
+    async getGananciasAnio(idEmpleado?: number): Promise<GananciasResponse> {
+        const raw = await prisma.$queryRaw<FilaRaw[]>`
+            SELECT mes, total_ventas, total_ganancias FROM ganancias_anio(${idEmpleado ?? null}::INT)
+        `
+        const detalle = raw.map(normalizarFila)
+        const { total_ventas, total_ganancias } = sumar(detalle)
+        return { periodo: "anio", detalle, total_ventas, total_ganancias }
     }
 }
