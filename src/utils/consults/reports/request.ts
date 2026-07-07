@@ -1,6 +1,4 @@
-export interface GananciasRequest {
-    periodo: "dia" | "semana" | "mes" | "anio"
-}
+export interface GananciasRequest {} // No query params needed; separate endpoints
 
 export interface RankingRequest {
     limite?: number

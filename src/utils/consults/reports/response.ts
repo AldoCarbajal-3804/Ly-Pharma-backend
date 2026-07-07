@@ -1,7 +1,17 @@
+export interface GananciasDetalle {
+    rango?: string
+    dia?: string
+    semana?: string
+    mes?: string
+    total_ventas: number
+    total_ganancias: number
+}
+
 export interface GananciasResponse {
     periodo: string
-    total_ganancias: number
+    detalle: GananciasDetalle[]
     total_ventas: number
+    total_ganancias: number
 }
 
 export interface RankingEmpleado {
