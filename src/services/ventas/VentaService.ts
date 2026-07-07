@@ -107,6 +107,14 @@ export class VentaService {
             }
         }
 
+        const now = new Date()
+        const dayOfWeek = now.getDay()
+        const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+        const startOfWeek = new Date(now)
+        startOfWeek.setDate(now.getDate() - diff)
+        startOfWeek.setHours(0, 0, 0, 0)
+        where.fecha_venta = { gte: startOfWeek }
+
         const [ventas, total] = await Promise.all([
             prisma.ventas.findMany({
                 where,
