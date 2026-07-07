@@ -1,0 +1,15 @@
+
+> Ly-Pharma-backend@1.0.0 dev D:\Proyectos\Proyectos PC\LyPharma\backend
+> nodemon src/index.ts
+
+[33m[nodemon] 3.1.14[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): src\**\*[39m
+[33m[nodemon] watching extensions: ts[39m
+[32m[nodemon] starting `ts-node src/index.ts`[39m
+Server is running on port 3000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node src/index.ts`[39m
+Server is running on port 3000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node src/index.ts`[39m
